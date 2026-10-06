@@ -1,0 +1,15 @@
+{
+  "name": "threads-reply",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Threadsのコメントに自動で返信する。会話の数を増やして表示を伸ばすため",
+  "scripts": {
+    "start": "node index.js",
+    "dry": "node index.js --dry",
+    "test": "node scripts/selftest.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

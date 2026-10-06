@@ -1,0 +1,32 @@
+name: Threadsの返信
+
+# 10分おきに見回る。
+# GitHubの都合で数分ずれることがあるが、返信は即レスより少し遅いほうが人に見える。
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:        # 画面から手で動かすボタンも付けておく
+    inputs:
+      dry:
+        description: "送らずに、何を返すつもりかだけ見る"
+        type: boolean
+        default: false
+
+concurrency:
+  group: threads-reply      # 前の回が長引いていたら、重ねて走らせない
+  cancel-in-progress: false
+
+jobs:
+  reply:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: 見回り
+        env:
+          THREADS_ACCESS_TOKEN: ${{ secrets.THREADS_ACCESS_TOKEN }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: node index.js ${{ (github.event_name == 'workflow_dispatch' && inputs.dry) && '--dry' || '' }}
