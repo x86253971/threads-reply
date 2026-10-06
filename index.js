@@ -7,9 +7,21 @@
 // GitHub Actions は失敗するとメールをくれるので、黙って止まり続けることがない。
 // (前の仕組みは静かに止まり、2週間誰も気づかなかった)
 
+import { existsSync, readFileSync } from "node:fs";
 import * as threads from "./lib/threads.js";
 import { sweep, config } from "./lib/sweep.js";
 import * as ai from "./lib/ai.js";
+
+// 手元で試すときだけ .env を読む。
+// GitHub Actions では Secrets が環境変数で入ってくるので、このファイルは要らない。
+// .env は .gitignore に入れてあるので、GitHubには上がらない
+const envFile = new URL("./.env", import.meta.url);
+if (existsSync(envFile)) {
+  for (const line of readFileSync(envFile, "utf8").split(/\r?\n/)) {
+    const m = line.match(/^\s*([A-Z0-9_]+)\s*=\s*(.*)$/);
+    if (m && !process.env[m[1]]) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "").trim();
+  }
+}
 
 const dryRun = process.argv.includes("--dry");
 
