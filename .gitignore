@@ -1,3 +1,6 @@
 node_modules/
 .env
 *.log
+記録/
+下書き/
+週報/
