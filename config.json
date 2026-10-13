@@ -30,7 +30,7 @@
     "_note": "5章。返信の作り方",
     "min_chars": 15,
     "max_chars": 90,
-    "line_extra_chars": 40,
+    "line_extra_chars": 20,
     "_line_extra_note": "LINEを案内するときだけ、この文字数ぶん長くしてよい",
     "emoji": "0〜1個まで",
     "question_ratio": 0.4,

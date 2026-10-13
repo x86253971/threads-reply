@@ -115,6 +115,12 @@ check("案内しない相手にLINEの話はしない", !inspect("よければ�
 check("案内する相手ならLINEの話はよい", inspect("よければプロフィールの公式LINEで、ゆっくりお話を聞かせてくださいね。", { guideLine: true }).ok);
 check("コメント欄で生年月日を聞かない", !inspect("よければ生年月日を教えてください、少し見てみますね。").ok);
 check("LINEの案内の中なら生年月日に触れてよい", inspect("LINEでは生年月日から一人ずつ見られます。よければプロフィールからどうぞ。", { guideLine: true }).ok);
+check("相手がLINE(アプリ)の話をしているなら「LINE」と書いてよい",
+  inspect("元彼のLINE、つい見返しちゃいますよね。少しずつ離れていけたら十分です。", { commentText: "元彼のLINEを見返す癖を手放します" }).ok);
+check("それでも九尾のLINEへの案内に見えるものは落とす",
+  !inspect("よければプロフィールの公式LINEで、ゆっくりお話を聞かせてくださいね。", { commentText: "元彼のLINEを見返す癖" }).ok);
+check("相手がLINEの話をしていないなら「LINE」は落とす",
+  !inspect("LINEでもっと詳しくお話しできたらうれしいです、よければどうぞ。", { commentText: "わかります" }).ok);
 check("同じ文の繰り返しは落とす", !inspect(good, { recent: [good] }).ok);
 check("少し言い回しが似ているだけなら通る",
   inspect(good, { recent: ["書いてくださってありがとうございます。今日は少し休めるといいですね。"] }).ok);

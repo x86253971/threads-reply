@@ -103,7 +103,7 @@ show("2回目の見回りのあと（往復の続き）");
 console.log("\n" + "=".repeat(70) + "\n記録（どう仕分けて、どうしたか）\n" + "=".repeat(70));
 const NAMES = { A: "感想", B: "質問・相談", C: "占ってほしい", D: "重い相談", E: "荒らし・宣伝", F: "返事が要らない" };
 for (const x of book.list) {
-  const tags = [x.tags?.line ? "LINE案内" : "", x.tags?.question ? "質問で終える" : ""].filter(Boolean).join("・");
+  const tags = [x.tags?.line ? "LINE案内" : "", x.tags?.remind ? "LINE再案内" : "", x.tags?.question ? "質問で終える" : ""].filter(Boolean).join("・");
   console.log(
     `  @${x.username.padEnd(14)} ${x.followup ? "往復の続き " : ""}${x.type}(${NAMES[x.type] ?? "?"}) → ${x.status}` +
       `${x.why ? "：" + x.why : ""}${tags ? "［" + tags + "］" : ""}`
