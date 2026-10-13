@@ -4,12 +4,15 @@ main = "src/worker.js"
 compatibility_date = "2026-09-01"
 compatibility_flags = ["nodejs_compat"]
 
+# 外から開くURL(workers.dev)は使わない。1分おきに起きるだけ
+workers_dev = false
+
 # 1分おきに起こす。毎分は2日以内の投稿だけ、10分に1回はぜんぶ(src/worker.js)
 [triggers]
 crons = ["* * * * *"]
 
 # 記録・下書き・トークンの置き場。id は Cloudflare で作ったあとに書き換える
-# (npx wrangler kv namespace create KV で作ると id が出る)
+# (npx wrangler kv namespace create KV で作った。2026-10-13)
 [[kv_namespaces]]
 binding = "KV"
-id = "まだ作っていない"
+id = "71b62ef59ff54996853b4ece18a24f50"
