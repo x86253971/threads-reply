@@ -41,7 +41,9 @@ async function main() {
   console.log("");
   console.log(`段階 ${config.stage} / 見た投稿 ${r.posts}件 / 返し方を決めた ${r.made}件 / 送った ${r.sent}件 / 下書き ${r.drafted}件`);
   for (const s of r.skipped) console.log(`  ${s}`);
-  for (const n of r.notices) console.log(`  ★知らせ: ${n}`);
+  // 知らせには相手の名前とコメントが入る。公開ログ(GitHub)では件数だけ
+  if (process.env.GITHUB_ACTIONS) { if (r.notices.length) console.log(`  ★知らせ ${r.notices.length}件`); }
+  else for (const n of r.notices) console.log(`  ★知らせ: ${n}`);
   if (!dryRun && r.lines.length) console.log("  下書きフォルダに書き出しました");
 
   if (!dryRun && new Date().getUTCHours() === 0 && new Date().getUTCMinutes() < 15) await refresh(token);
