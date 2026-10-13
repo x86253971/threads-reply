@@ -1,0 +1,15 @@
+# Cloudflare Workers の設定(設計案18章)
+name = "threads-reply"
+main = "src/worker.js"
+compatibility_date = "2026-09-01"
+compatibility_flags = ["nodejs_compat"]
+
+# 1分おきに起こす。毎分は2日以内の投稿だけ、10分に1回はぜんぶ(src/worker.js)
+[triggers]
+crons = ["* * * * *"]
+
+# 記録・下書き・トークンの置き場。id は Cloudflare で作ったあとに書き換える
+# (npx wrangler kv namespace create KV で作ると id が出る)
+[[kv_namespaces]]
+binding = "KV"
+id = "まだ作っていない"

@@ -4,7 +4,7 @@
 // ここが通っていれば「誰に返すか・誰に返さないか」は正しい。
 // 実際に送れるかどうかは、node index.js --dry で見る。
 
-import { pickTargets, isQuiet, allowedToSend, threadWith, config } from "../lib/sweep.js";
+import { pickTargets, isQuiet, allowedToSend, threadWith, formatDraft, config } from "../lib/sweep.js";
 import { inspect, similarity } from "../lib/check.js";
 import { Book } from "../lib/records.js";
 import { decide } from "../lib/brain.js";
@@ -137,6 +137,16 @@ check("決まった文で返し、知らせる", d1.text === config.heavy.reply 
 check("重い相談の返し文にLINEの案内がない", !/LINE|ライン/.test(config.heavy.reply));
 const d2 = await decide({ post: { id: "p1", text: "投稿" }, comment: { text: "ありがとう" }, followup: true, book, username: "sora" });
 check("重い相談のあとの往復は自動で続けない", d2.text === null && Boolean(d2.notice));
+
+head("絵文字だけのコメント(AIを呼ばない)");
+for (const e of ["🦊", "🦊🦊", "🙏✨", "！！", "🌸 "]) {
+  const d = await decide({ post: { id: "p1", text: "投稿" }, comment: { text: e }, book: new Book([]), username: "x" });
+  check(`「${e}」は返さない`, d.type === "F" && d.text === null);
+}
+
+head("下書きの書き出し");
+check("何もなければ空", formatDraft({ lines: [], notices: [], label: "段階1" }) === "");
+check("知らせが先頭に出る", formatDraft({ lines: ["a"], notices: ["重い相談"], label: "段階1" }).indexOf("知らせ") < formatDraft({ lines: ["a"], notices: ["重い相談"], label: "段階1" }).indexOf("  a"));
 
 head("設定の見落とし");
 check("ペルソナが書かれている", (config.persona ?? []).length > 0);

@@ -4,6 +4,7 @@
 // Threadsには一切つながりません。記録も残しません。文面と仕分けの出来だけを見るためのもの。
 // config.json の persona や、lib/ai.js の指示を直したら、これで確かめる。
 
+import "../lib/local.js";   // .env を読む
 import { decide } from "../lib/brain.js";
 import { Book } from "../lib/records.js";
 

@@ -1,4 +1,4 @@
-// 入口。10分おきに呼ばれる想定。
+// パソコンで動かすときの入口。(Cloudflare で動かすときの入口は src/worker.js)
 //
 //   node index.js            config.json の stage どおりに動く(段階1なら下書きだけ)
 //   node index.js --dry      何を返すつもりかを画面に出すだけ。送らず、記録も下書きも残さない
@@ -7,10 +7,11 @@
 // GitHub Actions は失敗するとメールをくれるので、黙って止まり続けることがない。
 // (前の仕組みは静かに止まり、2週間誰も気づかなかった)
 
-import { existsSync, readFileSync, writeFileSync, appendFileSync, mkdirSync } from "node:fs";
-import { config, ENV_FILE, ROOT } from "./lib/config.js";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { ENV_FILE, fileBook, saveRecords, appendDraft, logLine } from "./lib/local.js";
+import { config } from "./lib/config.js";
 import * as threads from "./lib/threads.js";
-import { sweep } from "./lib/sweep.js";
+import { sweep, formatDraft, jstDate } from "./lib/sweep.js";
 import * as ai from "./lib/ai.js";
 
 const dryRun = process.argv.includes("--dry");
@@ -36,7 +37,12 @@ async function main() {
     process.exit(1);
   }
 
-  const r = await sweep({ token, dryRun });
+  const book = fileBook();
+  const r = await sweep({ token, dryRun, book });
+  if (!dryRun) {
+    saveRecords(book.list);
+    appendDraft(jstDate(new Date()), formatDraft(r));
+  }
 
   console.log("");
   console.log(`段階 ${config.stage} / 見た投稿 ${r.posts}件 / 返し方を決めた ${r.made}件 / 送った ${r.sent}件 / 下書き ${r.drafted}件`);
@@ -55,8 +61,7 @@ async function main() {
 async function refresh(token) {
   const log = (s) => {
     console.log(s);
-    mkdirSync(new URL("記録/", ROOT), { recursive: true });
-    appendFileSync(new URL("記録/トークン.log", ROOT), `${new Date().toISOString()} ${s}\n`, "utf8");
+    logLine("トークン.log", s);
   };
   try {
     const { token: next, expiresInSec } = await threads.refreshToken(token);

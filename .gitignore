@@ -4,3 +4,5 @@ node_modules/
 記録/
 下書き/
 週報/
+.dev.vars
+.wrangler/

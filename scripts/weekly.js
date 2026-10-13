@@ -6,8 +6,7 @@
 // LINE の友だち追加の数は、今は入れていない(九尾LINE側の記録とは、まだつないでいない)。
 
 import { mkdirSync, writeFileSync } from "node:fs";
-import { ROOT } from "../lib/config.js";
-import { load } from "../lib/records.js";
+import { ROOT, loadRecords as load } from "../lib/local.js";
 import * as threads from "../lib/threads.js";
 
 const days = Number(process.argv[2] ?? 7);
